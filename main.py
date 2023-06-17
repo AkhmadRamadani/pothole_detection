@@ -15,9 +15,12 @@ def hello_world():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    imageUrl = request.form['imageUrl']
-    prediction = predictPothole(imageUrl)
-    return jsonify({'prediction': prediction, })
+    # get data from raw
+	data = request.get_json(force=True)
+	# get image url
+	imageUrl = data['imageUrl']
+	prediction = predictPothole(imageUrl)
+	return jsonify({'prediction': prediction, })
     # predict the class using url to image
     # predict the class using path to image
     # prediction = predictPothole(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
