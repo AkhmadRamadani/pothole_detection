@@ -6,7 +6,7 @@ import cv2
 from multiprocessing import Value
 
 app = Flask(__name__)
-
+app.config['UPLOAD_FOLDER'] = './uploads'
 counter = Value('i', 0)
 
 @app.route('/', methods=['GET'])
@@ -17,9 +17,9 @@ def hello_world():
 def predict():
     image = request.files['image'] # get the image
     # save the image to ./uploads
-    image.save(os.path.join('./uploads', image.filename))
+    image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
     # predict the class using path to image
-    prediction = predictPothole(os.path.join('./uploads', image.filename))
+    prediction = predictPothole(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
     return jsonify({'prediction': prediction, })
 
 
