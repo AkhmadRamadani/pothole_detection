@@ -15,12 +15,13 @@ def hello_world():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    image = request.files['image'] # get the image
-    # save the image to ./uploads
-    image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-    # predict the class using path to image
-    prediction = predictPothole(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+    imageUrl = request.form['imageUrl']
+    prediction = predictPothole(imageUrl)
     return jsonify({'prediction': prediction, })
+    # predict the class using url to image
+    # predict the class using path to image
+    # prediction = predictPothole(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+    # return jsonify({'prediction': prediction, })
 
 
 @app.route('/upload', methods=['POST','GET'])

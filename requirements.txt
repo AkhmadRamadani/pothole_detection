@@ -11,3 +11,4 @@ scikit-learn
 matplotlib
 tensorflow-cpu
 opencv-contrib-python-headless
+urllib3
