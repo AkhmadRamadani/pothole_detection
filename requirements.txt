@@ -12,5 +12,4 @@ matplotlib
 tensorflow-cpu
 opencv-contrib-python-headless
 urllib3
-base64
 
