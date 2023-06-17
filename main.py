@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import numpy as np
-from model import predictPothole
+from model import predictPothole, base64predict
 import os
 import cv2
 from multiprocessing import Value
@@ -26,6 +26,14 @@ def predict():
     # prediction = predictPothole(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
     # return jsonify({'prediction': prediction, })
 
+@app.route('/predict64', methods=['POST'])
+def predict64():
+		# get data from raw
+	data = request.get_json(force=True)
+	# get image url
+	image = data['image']
+	prediction = base64predict(image)
+	return jsonify({'prediction': prediction, })	
 
 @app.route('/upload', methods=['POST','GET'])
 def upload():
