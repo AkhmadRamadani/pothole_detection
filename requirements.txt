@@ -2,10 +2,10 @@ flask
 gunicorn
 numpy
 opencv-python
-keras
+# keras
 pandas
 numpy
 scikit-learn
 matplotlib
-tensorflow
-tensorflow-gpu
+# tensorflow
+Flask 

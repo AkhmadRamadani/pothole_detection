@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import numpy as np
-from model import predictPothole
+# from model import predictPothole
 import os
 import cv2
 from multiprocessing import Value
@@ -13,14 +13,14 @@ counter = Value('i', 0)
 def hello_world():
     return 'Hi, It\'s me. I\'m the problem it\'s me.'
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    image = request.files['image'] # get the image
-    # save the image to ./uploads
-    image.save(os.path.join('./uploads', image.filename))
-    # predict the class using path to image
-    prediction = predictPothole(os.path.join('./uploads', image.filename))
-    return jsonify({'prediction': prediction, })
+# @app.route('/predict', methods=['POST'])
+# def predict():
+#     image = request.files['image'] # get the image
+#     # save the image to ./uploads
+#     image.save(os.path.join('./uploads', image.filename))
+#     # predict the class using path to image
+#     prediction = predictPothole(os.path.join('./uploads', image.filename))
+#     return jsonify({'prediction': prediction, })
 
 
 @app.route('/upload', methods=['POST','GET'])
