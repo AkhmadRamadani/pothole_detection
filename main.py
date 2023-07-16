@@ -4,10 +4,33 @@ from model import predictPothole, base64predict
 import os
 import cv2
 from multiprocessing import Value
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from firebase_admin import storage
+import datetime
+import pytz
+import base64
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './uploads'
 counter = Value('i', 0)
+timezone = pytz.timezone("Asia/Jakarta")
+cred = credentials.Certificate("serviceAccountKey.json")
+
+# Initialize the app with a service account, granting admin privileges
+firebase_admin.initialize_app(cred)
+
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'pothole-detection-c439a.appspot.com'
+}, name='storage')
+
+
+db = firestore.client()
+
+bucket = storage.bucket(app=firebase_admin.get_app(name='storage'))
+
 
 @app.route('/', methods=['GET'])
 def hello_world():
@@ -32,7 +55,37 @@ def predict64():
 	data = request.get_json(force=True)
 	# get image url
 	image = data['image']
+	latitude = data['latitude']
+	longitude = data['longitude']
+
+	# read image from base64
+	base64Image = image
+	base64Image = base64Image.split(',')[1]
+	base64Image = base64Image.encode()
+	base64Image = base64.b64decode(base64Image)
+
+	# predict the class using url to image
 	prediction = base64predict(image)
+
+	# save image to firebase storage
+	clock_time = datetime.datetime.now(timezone)
+	clock_time = clock_time.strftime("%Y-%m-%d %H:%M:%S")
+	blob = bucket.blob('pictures/'+clock_time+".jpg")
+	blob.upload_from_string(base64Image, content_type='image/jpg')
+	blob.make_public()
+
+	# save image to firebase firestore
+	doc_ref = db.collection(u'images').document()
+	doc_ref.set({
+		# image url should be downloadable from firebase storage
+		u'imageUrl': blob.public_url,
+		u'timestamp': firestore.SERVER_TIMESTAMP,
+		u'latitude': latitude,
+		u'longitude': longitude,
+		u'prediction': prediction,
+		u'isFixed': False
+	})
+
 	return jsonify({'prediction': prediction, })	
 
 @app.route('/upload', methods=['POST','GET'])
