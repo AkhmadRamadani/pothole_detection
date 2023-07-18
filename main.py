@@ -8,6 +8,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import storage
+from firebase_admin import db as firebase_db
+
 import datetime
 import pytz
 import base64
@@ -30,10 +32,9 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://pothole-detection-c439a-default-rtdb.asia-southeast1.firebasedatabase.app/'
 }, name='realtimeDB')
 
-firebase_db_ref = firebase_admin.db.reference(app=firebase_admin.get_app(name='realtimeDB'))
 
 db = firestore.client()
-
+firebase_db_ref = firebase_db.reference(app=firebase_admin.get_app(name='realtimeDB'))
 bucket = storage.bucket(app=firebase_admin.get_app(name='storage'))
 
 
