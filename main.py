@@ -26,6 +26,11 @@ firebase_admin.initialize_app(cred, {
     'storageBucket': 'pothole-detection-c439a.appspot.com'
 }, name='storage')
 
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://pothole-detection-c439a-default-rtdb.asia-southeast1.firebasedatabase.app/'
+}, name='realtimeDB')
+
+firebase_db_ref = firebase_admin.db.reference(app=firebase_admin.get_app(name='realtimeDB'))
 
 db = firestore.client()
 
@@ -55,8 +60,10 @@ def predict64():
 	data = request.get_json(force=True)
 	# get image url
 	image = data['image']
-	latitude = data['latitude']
-	longitude = data['longitude']
+	# get latitude from real time database
+	latitude = firebase_db_ref.child('latitude').get()
+	# get longitude from real time database
+	longitude = firebase_db_ref.child('longitude').get()
 
 	# read image from base64
 	base64Image = image
