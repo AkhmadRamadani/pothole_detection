@@ -82,6 +82,13 @@ def predict64():
 	blob.upload_from_string(base64Image, content_type='image/jpg')
 	blob.make_public()
 
+	# make is fixed true if prediction is pothole
+	is_fixed = False
+
+	if prediction == 'pothole':
+		is_fixed = True
+
+
 	# save image to firebase firestore
 	doc_ref = db.collection(u'images').document()
 	doc_ref.set({
@@ -91,7 +98,7 @@ def predict64():
 		u'latitude': latitude,
 		u'longitude': longitude,
 		u'prediction': prediction,
-		u'isFixed': False
+		u'isFixed': is_fixed
 	})
 
 	return jsonify({'prediction': prediction, })	
